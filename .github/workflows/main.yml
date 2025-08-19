@@ -39,3 +39,54 @@ jobs:
       # Run tests (optional)
       - name: Run tests
         run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build  # Only run deploy job after the build job is successful
+
+    steps:
+      # Checkout code (again, in case it's needed in the deploy step)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH key
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      # SSH into the server, start Minikube, and deploy the app
+      - name: Deploy to Remote Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Start Minikube (if not already running)
+            if ! minikube status | grep -q "Running"; then
+              minikube start --driver=docker
+            fi
+
+            # Set up kubectl (if not already set)
+            export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
+            if [[ -z "$KUBEVERSION" ]]; then
+              curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              sudo mv kubectl /usr/local/bin/
+            fi
+
+            # Configure kubectl to use Minikube
+            kubectl config use-context minikube
+
+            # Pull the Docker image from Docker Hub
+            docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
+
+            # Deploy the app using kubectl (ensure your deployment.yaml is already on the server or part of the repo)
+            kubectl apply -f deployment.yaml
+
+            # Expose the service (optional, if needed)
+            kubectl expose deployment docker-node-app --type=NodePort --port=3000
+
+            # Get the Minikube service URL (optional, to confirm deployment)
+            minikube service docker-node-app --url
+          EOF
