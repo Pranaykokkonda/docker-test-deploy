@@ -38,4 +38,7 @@ jobs:
 
       # Run tests (optional)
       - name: Run tests
-        run: npm test
+        run: |
+          cd app
+          npm install  # Ensure dependencies are installed
+          npm test
