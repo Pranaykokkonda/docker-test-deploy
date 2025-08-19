@@ -66,6 +66,14 @@ jobs:
             minikube start --driver=docker || (minikube delete && minikube start --driver=docker)
           fi
 
+          # Ensure kubectl is configured correctly
+          export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
+          if [[ -z "$KUBEVERSION" ]]; then
+            curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+          fi
+
             # Configure kubectl to use Minikube
           kubectl config use-context minikube || {
             echo "Minikube context not found. Starting Minikube cluster..."; 
