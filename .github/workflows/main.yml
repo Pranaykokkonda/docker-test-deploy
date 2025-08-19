@@ -62,7 +62,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER1_IP }} << 'EOF'
           sudo usermod -aG docker $USER
           newgrp docker || true
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
+          #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
           
           if ! minikube status | grep -q "Running"; then
             minikube start --driver=docker || (minikube delete && minikube start --driver=docker)
@@ -85,9 +85,12 @@ jobs:
             # Pull the Docker image from Docker Hub
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
 
+            echo "Location..."
+            pwd
+
             # Deploy the app using kubectl (ensure your deployment.yaml is already on the server or part of the repo)
             kubectl apply -f deployment.yaml
-            kubectl apply -f service.yaml
+            #kubectl apply -f service.yaml
 
             # Expose the service (optional, if needed)
             kubectl expose deployment docker-node-app --type=NodePort --port=3000
