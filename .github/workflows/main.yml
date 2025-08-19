@@ -103,8 +103,8 @@ jobs:
             kubectl get pods
 
             # Expose the service (optional, if needed)
-            #kubectl expose deployment docker-node-app --type=NodePort --port=3000
+            kubectl expose deployment docker-node-app --type=NodePort --port=3000
 
             # Get the Minikube service URL (optional, to confirm deployment)
-            #minikube service docker-node-app --url
+            minikube service docker-node-app --url
           EOF
