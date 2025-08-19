@@ -60,20 +60,17 @@ jobs:
       - name: Deploy to Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
+          
           if ! minikube status | grep -q "Running"; then
             minikube start --driver=docker || (minikube delete && minikube start --driver=docker)
           fi
 
-            # Set up kubectl (if not already set)
-            export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
-            if [[ -z "$KUBEVERSION" ]]; then
-              curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
-              chmod +x kubectl
-              sudo mv kubectl /usr/local/bin/
-            fi
-
             # Configure kubectl to use Minikube
-            kubectl config use-context minikube || kubectl config use-context $(kubectl config current-context)
+          kubectl config use-context minikube || {
+            echo "Minikube context not found. Starting Minikube cluster..."; 
+            minikube start --driver=docker;
+          }
 
             # Pull the Docker image from Docker Hub
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
