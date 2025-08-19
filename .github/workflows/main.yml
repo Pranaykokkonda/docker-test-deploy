@@ -60,10 +60,9 @@ jobs:
       - name: Deploy to Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            # Start Minikube (if not already running)
-            if ! minikube status | grep -q "Running"; then
-              minikube start --driver=docker
-            fi
+          if ! minikube status | grep -q "Running"; then
+            minikube start --driver=docker || (minikube delete && minikube start --driver=docker)
+          fi
 
             # Set up kubectl (if not already set)
             export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
@@ -74,13 +73,14 @@ jobs:
             fi
 
             # Configure kubectl to use Minikube
-            kubectl config use-context minikube
+            kubectl config use-context minikube || kubectl config use-context $(kubectl config current-context)
 
             # Pull the Docker image from Docker Hub
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
 
             # Deploy the app using kubectl (ensure your deployment.yaml is already on the server or part of the repo)
             kubectl apply -f deployment.yaml
+            kubectl apply -f service.yaml
 
             # Expose the service (optional, if needed)
             kubectl expose deployment docker-node-app --type=NodePort --port=3000
