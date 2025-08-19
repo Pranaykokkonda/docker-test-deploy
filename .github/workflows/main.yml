@@ -107,4 +107,5 @@ jobs:
 
             # Get the Minikube service URL (optional, to confirm deployment)
             minikube service docker-node-app --url
+            kubectl logs docker-node-app
           EOF
