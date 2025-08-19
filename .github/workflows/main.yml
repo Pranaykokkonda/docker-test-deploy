@@ -60,6 +60,8 @@ jobs:
       - name: Deploy to Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          sudo usermod -aG docker $USER
+          newgrp docker || true
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
           
           if ! minikube status | grep -q "Running"; then
