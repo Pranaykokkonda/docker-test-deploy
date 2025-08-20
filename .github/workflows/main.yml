@@ -86,7 +86,7 @@ jobs:
             minikube status
           
             # Pull the Docker image from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
+            #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
 
             🚀echo "Location..."
             pwd
@@ -107,5 +107,5 @@ jobs:
 
             # Get the Minikube service URL (optional, to confirm deployment)
             minikube service docker-node-app --url
-            kubectl logs docker-node-app-86497bd9fd-f8xf9
+            #kubectl logs docker-node-app-86497bd9fd-f8xf9
           EOF
