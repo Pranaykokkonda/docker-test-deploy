@@ -62,19 +62,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER1_IP }} << 'EOF'
           sudo usermod -aG docker $USER
           newgrp docker || true
-          #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
           
           if ! minikube status | grep -q "Running"; then
             minikube start --driver=docker || (minikube delete && minikube start --driver=docker)
           fi
-
-          # Ensure kubectl is configured correctly
-          #export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
-          #if [[ -z "$KUBEVERSION" ]]; then
-            #curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
-            #chmod +x kubectl
-            #sudo mv kubectl /usr/local/bin/
-          #fi
 
             # Configure kubectl to use Minikube
           #kubectl config use-context minikube || {
@@ -84,9 +75,6 @@ jobs:
 
             echo "Checking minikube status..."
             minikube status
-          
-            # Pull the Docker image from Docker Hub
-            #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
 
             echo "Current Location....."
             pwd
@@ -113,11 +101,4 @@ jobs:
 
             echo "Browsing the application after successfull deployment....."
             curl http://192.168.49.2:32000/
-
-            # Expose the service (optional, if needed)
-            #kubectl expose deployment docker-node-app --type=NodePort --port=3000
-
-            # Get the Minikube service URL (optional, to confirm deployment)
-            #minikube service docker-node-app --url
-            #kubectl logs docker-node-app-86497bd9fd-f8xf9
           EOF
