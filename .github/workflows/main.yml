@@ -101,6 +101,9 @@ jobs:
             🚀echo "kubectl apply..."
             kubectl apply -f deployment.yaml
             kubectl get pods
+            kubectl apply -f service.yaml
+            kubectl get services
+
 
             # Expose the service (optional, if needed)
             #kubectl expose deployment docker-node-app --type=NodePort --port=3000
