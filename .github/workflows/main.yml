@@ -92,19 +92,19 @@ jobs:
             pwd
             ls -ltrh
             
-            echo "Cloning the repo....."
-            git clone -b main https://github.com/Pranaykokkonda/docker-test-deploy.git
+            #echo "Cloning the repo....."
+            #git clone -b main https://github.com/Pranaykokkonda/docker-test-deploy.git
             cd docker-test-deploy/
             ls -ltrh
             
 
             # Deploy the app using kubectl (ensure your deployment.yaml is already on the server or part of the repo)
             echo "Deploying application and checking pods....."
-            kubectl apply -f deployment.yaml
+            #kubectl apply -f deployment.yaml
             kubectl get pods
 
             echo "Exposing the application....."
-            kubectl apply -f service.yaml
+            #kubectl apply -f service.yaml
             kubectl get services
 
             echo "Checking the running docker containers and minikube ip....."            
