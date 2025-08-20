@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-node-service
+spec:
+  selector:
+    app: docker-node-app
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000        # Service port (internal)
+      targetPort: 3000  # Container port
+      nodePort: 32000   # External port (accessible via IP)
