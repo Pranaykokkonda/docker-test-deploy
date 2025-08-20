@@ -82,30 +82,36 @@ jobs:
             #minikube start --driver=docker;
           #}
 
-            🚀echo "minikube status..."
+            echo "Checking minikube status..."
             minikube status
           
             # Pull the Docker image from Docker Hub
             #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
 
-            🚀echo "Location..."
+            echo "Current Location....."
             pwd
             ls -ltrh
-            🚀echo "Cloning Repo..."
+            
+            echo "Cloning the repo....."
             git clone -b main https://github.com/Pranaykokkonda/docker-test-deploy.git
             cd docker-test-deploy/
             ls -ltrh
             
 
             # Deploy the app using kubectl (ensure your deployment.yaml is already on the server or part of the repo)
-            🚀echo "kubectl apply..."
+            echo "Deploying application and checking pods....."
             kubectl apply -f deployment.yaml
             kubectl get pods
+
+            echo "Exposing the application....."
             kubectl apply -f service.yaml
             kubectl get services
-            netstat -pnlt
+
+            echo "Checking the running docker containers and minikube ip....."            
             docker ps
             minikube ip
+
+            echo "Browsing the application after successfull deployment....."
             curl http://192.168.49.2:32000/
 
             # Expose the service (optional, if needed)
