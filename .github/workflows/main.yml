@@ -105,7 +105,8 @@ jobs:
             kubectl get services
             netstat -pnlt
             docker ps
-
+            minikube ip
+            curl http://192.168.49.2:32000/
 
             # Expose the service (optional, if needed)
             #kubectl expose deployment docker-node-app --type=NodePort --port=3000
