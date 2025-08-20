@@ -60,8 +60,8 @@ jobs:
       - name: Deploy to Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER1_IP }} << 'EOF'
-          sudo usermod -aG docker $USER
-          newgrp docker || true
+          #sudo usermod -aG docker $USER
+          #newgrp docker || true
           #sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-node-app
           
           if ! minikube status | grep -q "Running"; then
@@ -69,18 +69,18 @@ jobs:
           fi
 
           # Ensure kubectl is configured correctly
-          export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
-          if [[ -z "$KUBEVERSION" ]]; then
-            curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-          fi
+          #export KUBEVERSION=$(kubectl version --client -o json | jq -r '.clientVersion.gitVersion')
+          #if [[ -z "$KUBEVERSION" ]]; then
+            #curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
+            #chmod +x kubectl
+            #sudo mv kubectl /usr/local/bin/
+          #fi
 
             # Configure kubectl to use Minikube
-          kubectl config use-context minikube || {
-            echo "Minikube context not found. Starting Minikube cluster..."; 
-            minikube start --driver=docker;
-          }
+          #kubectl config use-context minikube || {
+            #echo "Minikube context not found. Starting Minikube cluster..."; 
+            #minikube start --driver=docker;
+          #}
 
             🚀echo "minikube status..."
             minikube status
