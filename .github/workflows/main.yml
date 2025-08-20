@@ -103,6 +103,8 @@ jobs:
             kubectl get pods
             kubectl apply -f service.yaml
             kubectl get services
+            netstat -pnlt
+            docker ps
 
 
             # Expose the service (optional, if needed)
